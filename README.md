@@ -1,0 +1,1 @@
+A flash card program written in python for the terminal.
