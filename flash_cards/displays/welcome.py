@@ -1,6 +1,5 @@
 from flash_cards.displays.page_template import Page
-from flash_cards.displays.edit_group import EditGroupPage
-from flash_cards.displays.view_group import ViewGroupPage
+from flash_cards.displays.groups import PreviewGroupPage, EditGroupPage
 
 
 class WelcomePage(Page):
@@ -20,7 +19,7 @@ b: View Groups''')
             self.context.add_page(EditGroupPage(self.context))
 
         elif key == 'b':
-            self.context.add_page(ViewGroupPage(self.context))
+            self.context.add_page(PreviewGroupPage(self.context))
 
         elif key == 'q':
             quit()

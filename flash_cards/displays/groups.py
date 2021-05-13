@@ -1,6 +1,38 @@
-from flash_cards.groups import groups
+from flash_cards.groups import groups, Group
 from flash_cards.displays.page_template import Page
-from flash_cards.displays.new_group import NewGroupPage
+
+
+class ViewGroupPage(Page):
+    def __init__(self, context):
+        super().__init__(context)
+
+    def display(self):
+        print('Select a group of cards to view.\n')
+        for index, group in enumerate(groups):
+            print(f'{chr(index + 97)}: {group.name}')
+        super().display()  
+
+    def parse_input(self, key):
+        super().parse_input(key)
+        if key == 'a': 
+            self.context.page_stack.append(NewGroupPage(self.context))
+
+
+class NewGroupPage(Page):
+    def __init__(self, context):
+        super().__init__(context)
+
+    def display(self):
+        print('Creating a new group.\n')
+        new_group = Group(
+            input('Name of group: '),
+            input('Short description: ')
+        ) 
+        groups.append(new_group)
+        self.context.back()
+
+    def parse_input(self, key):
+        super().parse_input(key)
 
 
 class EditGroupPage(Page):
@@ -32,4 +64,4 @@ class EditGroupPage(Page):
             self.context.page_stack.append(NewGroupPage(self.context))
         if key in [chr(x) for x in range(98, 98 + len(groups) + 1)]:
             index = ord(key) - 98
-            self.context.page_stack.append(EditGroupPage(self.context, index))    
+            self.context.page_stack.append(EditGroupPage(self.context, index))
