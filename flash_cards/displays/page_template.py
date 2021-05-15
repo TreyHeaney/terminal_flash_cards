@@ -1,9 +1,13 @@
 class Page:
     def __init__(self, context):
         self.context = context
-    
-    def display(self):
-        print('\nq: Quit, `: Back Page')
+        self.name = 'page'
+
+    def display(self, new_line=True):
+        print(('\n' if new_line else '') + 'q: Quit, `: Back Page')
+
+    def predisplay(self):
+        print(' -> '.join([page.name for page in self.context.page_stack]))
 
     def parse_input(self, key):
         if key == 'q':

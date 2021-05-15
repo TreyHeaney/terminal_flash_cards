@@ -13,5 +13,4 @@ class PageContext:
     def back(self):
         del self.page_stack[-1]
 
-
 context = PageContext()
