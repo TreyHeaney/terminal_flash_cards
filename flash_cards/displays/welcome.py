@@ -13,7 +13,7 @@ class WelcomePage(Page):
 
         print('''Welcome to flash cards!
 
-a: Create a new group
+a: Manage groups
 b: View Groups''')
         
         super().display()

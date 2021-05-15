@@ -7,7 +7,7 @@ class Page:
         print(('\n' if new_line else '') + 'q: Quit, `: Back Page')
 
     def predisplay(self):
-        print(' -> '.join([page.name for page in self.context.page_stack]))
+        print(' -> '.join([page.name for page in self.context.page_stack]) + '\n')
 
     def parse_input(self, key):
         if key == 'q':

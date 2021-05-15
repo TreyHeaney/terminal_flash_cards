@@ -35,7 +35,8 @@ class PreviewGroupPage(Page):
                 self.context.add_page(PreviewGroupPage(self.context, 0))
         else:
             if key == 's':
-                self.context.add_page(ViewCardsPage(self.context))
+                cards = groups[self.selected_group].cards
+                self.context.add_page(ViewCardsPage(self.context, cards))
 
 
 class NewGroupPage(Page):
@@ -61,11 +62,13 @@ class EditGroupPage(Page):
     def __init__(self, context, group=None):
         super().__init__(context)
         self.group = group
+        self.name = 'Editing Groups'
 
     def display(self):
+        super().predisplay()
         if self.group is None: 
             print('Select a group to edit.\n')
-            print('a: New group')
+            print('a: Create a new group')
             for index, group in enumerate(groups):
                 print(f'{chr(index + 98)}: {group.name}')
             super().display()
@@ -74,9 +77,9 @@ class EditGroupPage(Page):
             print(f'Editing card group "{edited_group.name}"\n')
             edited_group.name = input('New group name: ')
             edited_group.description = input('New group description: ')
-            delete_group = input('Delete group? (yes/no)\n') == 'yes'
+            delete_group = input('Delete group? (type \'yes\')\n') == 'yes'
             
-            if delete_group: del edited_group
+            if delete_group: del groups[self.group]
             
             self.context.back()
 
