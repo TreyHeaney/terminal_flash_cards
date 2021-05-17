@@ -11,10 +11,14 @@ class WelcomePage(Page):
     def display(self):
         super().predisplay()
 
-        print('''Welcome to flash cards!
+        print('''   ______         __     _____            __    __
+  / __/ ___ ____ / /    / ______ ________/ ___ / /
+ / _// / _ `(_-</ _ \  / /__/ _ `/ __/ _  (_-</_/ 
+/_/ /_/\_,_/___/_//_/  \___/\_,_/_/  \_,_/___(_)  
+                                                  
 
-a: Manage groups
-b: View Groups''')
+a: Manage card groups
+b: View card groups''')
         
         super().display()
 

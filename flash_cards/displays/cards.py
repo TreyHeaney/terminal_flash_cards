@@ -1,7 +1,8 @@
-from random import choice, random, shuffle
 import os
+from random import choice, random, shuffle
 
 from flash_cards.displays.page_template import Page
+
 
 class ViewCardsPage(Page):
     def __init__(self, context, cards=[]):
@@ -55,4 +56,4 @@ class ViewCardsPage(Page):
             print(pre_text + f'{letter}: {answer}' + '\033[0m')
 
         super().display()
-        input('Press Enter to continue.')
+        input('Press enter to continue.')
