@@ -1,8 +1,10 @@
+from flash_cards.os_switches import clear_terminal
 from flash_cards.context import context
 import os
 
 while True:
-    os.system('clear')  # Offload this to deal with OS differences.
+    os.system(clear_terminal)
+    # Do the same for color related things in cards.
     context.page_stack[-1].display()
     user_input = input()
     context.page_stack[-1].parse_input(user_input)
