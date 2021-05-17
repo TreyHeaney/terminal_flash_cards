@@ -12,18 +12,3 @@ class Group:
         self.name = name
         self.description = description
         self.cards = cards
-
-
-# Dummy data for now.
-groups = [
-    Group('Arabic', '', [
-            Card('How do you say hello?', 'Marhaban', ['Yo', 'Whats up', 'Hey bro']),
-            Card('How do you say hello?', 'Marhaban', ['Yo', 'Whats up', 'Hey bro']),
-            Card('How do you say hello?', 'Marhaban', ['Yo', 'Whats up', 'Hey bro']),
-        ]),
-    Group('C++', '', [
-            Card('How do you say hello?', 'Marhaban', ['Yo', 'Whats up', 'Hey bro']),
-            Card('How do you say hello?', 'Marhaban', ['Yo', 'Whats up', 'Hey bro']),
-            Card('How do you say hello?', 'Marhaban', ['Yo', 'Whats up', 'Hey bro']),
-        ]), 
-]

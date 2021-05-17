@@ -1,7 +1,7 @@
 '''Pages for managing and viewing groups of cards.'''
 
 from flash_cards.cards import Group
-from flash_cards.cards.loads import groups
+from flash_cards.cards.storage import groups
 from flash_cards.displays.page_template import Page
 from flash_cards.displays.cards import ViewCardsPage
 

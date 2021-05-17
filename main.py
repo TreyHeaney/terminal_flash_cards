@@ -1,4 +1,4 @@
-from flash_cards.cards.loads import load_save
+from flash_cards.cards.storage import load_save
 from flash_cards.os_switches import clear_terminal
 from flash_cards.context import context
 import os

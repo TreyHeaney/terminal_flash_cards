@@ -1,3 +1,6 @@
+from flash_cards.cards.storage import save, groups
+
+
 class Page:
     def __init__(self, context):
         self.context = context
@@ -11,6 +14,7 @@ class Page:
 
     def parse_input(self, key):
         if key == 'q':
+            save(groups)
             quit()
         elif key == '`':
             self.context.back()

@@ -1,3 +1,5 @@
+'''Pages for viewing or managing cards.'''
+
 import os
 from random import choice, random, shuffle
 
