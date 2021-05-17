@@ -1,3 +1,5 @@
+'''Functions pertaining to persistent card storage.'''
+
 from json import load, dump
 
 from flash_cards.cards import Group, Card
@@ -36,8 +38,6 @@ def save(groups):
 
     file = open('./static/save.json', 'w')
     dump(dictionary, file)
-
-    print(dictionary)
 
 
 groups = load_save('./static/save.json')

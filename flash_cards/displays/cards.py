@@ -3,6 +3,8 @@
 import os
 from random import choice, random, shuffle
 
+from flash_cards.cards import Card
+from flash_cards.cards.storage import groups
 from flash_cards.displays.page_template import Page
 
 
@@ -59,3 +61,110 @@ class ViewCardsPage(Page):
 
         super().display()
         input('Press enter to continue.')
+
+
+class NewCardPage(Page):
+    def __init__(self, context, card_group):
+        super().__init__(context)
+        self.name = 'Card Creation'
+        self.card_group = card_group
+
+    def display(self):
+        super().predisplay()
+
+        group_adding_card_to = self.card_group
+
+        new_card = Card(
+            input('What is the question for this card?\n'),
+            input('What is the answer for this card?\n')
+        )
+
+        user_input = input('What are some faux answers for this card? (ENTER to stop)\n')
+        dummy_answers = [user_input]
+        while user_input.lower() != '':
+            user_input = input('')
+            dummy_answers.append(user_input)
+
+        new_card.dummy_answers = dummy_answers
+        group_adding_card_to.cards.append(new_card)
+        
+        self.context.back()
+        print('Completed card creation, press ENTER.')
+
+    def parse_input(self, key):
+        super().parse_input(key)
+
+
+class EditCardPage(Page):
+    def __init__(self, context, group, card_index):
+            super().__init__(context)
+            self.card = group.cards[card_index]
+            self.name = 'Manage Cards'
+            self.group = group
+            self.card_index = card_index
+
+    def display(self):
+        super().predisplay()
+        
+        card = self.card
+
+        print('Enter updated card question (ENTER to skip, X to delete)')
+        print(f'CURRENT: {card.question}')
+        new_question = input()
+        if new_question.lower() == 'x':
+            del self.group.cards[self.card_index]
+            self.context.back()
+            print('Card deleted press ENTER.')
+            return
+        card.question = new_question if new_question else card.question
+        
+        print('Enter updated answer')
+        print(f'CURRENT: {card.answer}')
+        new_answer = input()
+        card.answer = new_answer if new_answer else card.answer
+        
+        print('Enter updated dummy answers')
+        for index, dummy_answer in enumerate(card.dummy_answers):
+            print(f'CURRENT: {dummy_answer}')
+            new_dummy = input()
+            card.dummy_answers[index] = new_dummy if new_dummy else dummy_answer
+        
+        print('Enter new dummy answers (Press ENTER when completed)')
+        user_input = input()
+        while user_input != '':
+            card.dummy_answers.append(user_input)
+            user_input = input()
+
+        print('Completed editing card. Press ENTER')
+        self.context.back()
+
+    def parse_input(self, key):
+        super().parse_input(key)
+
+
+class ManageCardsPage(Page):
+    def __init__(self, context, card_group):
+        super().__init__(context)
+        self.card_group = groups[card_group]
+        self.name = 'Manage Cards'
+
+    def display(self):
+        super().predisplay()
+
+        for index, card in enumerate(self.card_group.cards):
+            print(f'{index}: {card.question}')
+
+        print('\nn: New card')
+        super().display(new_line=False)
+
+    def parse_input(self, key):
+        super().parse_input(key)
+
+        if key in [str(x) for x in range(len(self.card_group.cards))]:
+            self.context.add_page(EditCardPage(self.context,
+                                               self.card_group,
+                                               int(key)))
+        
+        elif key == 'n':
+            self.context.add_page(NewCardPage(self.context,
+                                              self.card_group))
