@@ -1,6 +1,6 @@
 class Card:
     '''A single card'''
-    def __init__(self, question, answer, dummy_answers):
+    def __init__(self, question, answer, dummy_answers=[]):
         self.question = question
         self.answer = answer
         self.dummy_answers = dummy_answers

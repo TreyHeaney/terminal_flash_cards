@@ -1,6 +1,7 @@
 '''Pages for managing and viewing groups of cards.'''
 
-from flash_cards.cards import groups, Group
+from flash_cards.cards import Group
+from flash_cards.cards.loads import groups
 from flash_cards.displays.page_template import Page
 from flash_cards.displays.cards import ViewCardsPage
 
@@ -21,6 +22,7 @@ class PreviewGroupPage(Page):
             super().display()  
         else:
             selected_group = groups[self.selected_group]
+            print('CARDS IN GROUP:')
             for card in selected_group.cards:
                 print(f'{card.question}: {card.answer}')
             print('\ns: Start new session, n: New card, v: View verbose card details')

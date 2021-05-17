@@ -1,6 +1,9 @@
+from flash_cards.cards.loads import load_save
 from flash_cards.os_switches import clear_terminal
 from flash_cards.context import context
 import os
+
+c = load_save('./static/save.json')
 
 while True:
     os.system(clear_terminal)
