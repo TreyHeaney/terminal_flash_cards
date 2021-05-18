@@ -5,6 +5,7 @@ import time
 from random import choice, random, shuffle
 
 from flash_cards.cards import Card
+from flash_cards.os_switches import clear_terminal
 from flash_cards.cards.storage import groups
 from flash_cards.cards.score_calculations import calculate_points, calculate_loss
 from flash_cards.displays.page_template import Page
@@ -46,21 +47,23 @@ class ViewCardsPage(Page):
         card = self.card
         if self.answers[key_index] == card.answer:
             time_since_correct = time.time() - card.last_correct
-            card.score = calculate_points(time_since_correct,
-                                          card.wrong_streak)
+            card.score += calculate_points(time_since_correct,
+                                           card.wrong_streak)
+            card.score = min((10, card.score))
 
             card.wrong_streak = 0
 
             card.last_correct = time.time()
         else:
-            card.score = calculate_loss(card.wrong_streak)
-
             card.wrong_streak += 1
+
+            card.score -= calculate_loss(card.wrong_streak)
+            card.score = min((0, card.score))
 
         self.display_answer(key_index)
 
     def display_answer(self, key_index):
-        os.system('clear')
+        os.system(clear_terminal)
         super().predisplay()
 
         print(self.card.question + '\n')

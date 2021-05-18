@@ -1,6 +1,3 @@
-import time
-
-
 def calculate_points(time_since_correct, wrong_streak):
     '''
     Calculate points acquired by getting a card correct.
@@ -8,10 +5,12 @@ def calculate_points(time_since_correct, wrong_streak):
     :param wrong_streak: Number of wrong answerings since the last correct.
     :return: Score gained. 
     '''
-    score = max((0, time_since_correct / 2500))
-    score = min(10, score)
+    score = max((0, time_since_correct / 15000))
+    score += 0.5
+    score = min(2, score)
     for _ in range(wrong_streak): score **= (1/3)
-    return score
+
+    return score 
 
 
 def calculate_loss(wrong_streak):
@@ -20,4 +19,10 @@ def calculate_loss(wrong_streak):
     :param wrong_streak: Number of wrong answerings since last correct.
     :return: Score lost.
     '''
-    return max(0, min(3.5, wrong_streak * 1.3))  # looks like a relu
+    return max(0, min(4, wrong_streak * 2))  # looks like a relu
+
+
+if __name__ == '__main__':
+    import time
+    print(f'TESTABLE FUNCTIONS: calculate_points, calculate_loss')
+    breakpoint()
