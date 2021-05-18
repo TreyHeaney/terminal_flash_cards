@@ -56,7 +56,7 @@ class ViewCardsPage(Page):
     def parse_input(self, key):
         super().parse_input(key)
 
-        key_index = ord(key) - 97        
+        key_index = ord(key) - 97 if key else ''
         if key_index not in [0, 1, 2, 3]:
             # Some sorta error would be preferrable here.
             return
