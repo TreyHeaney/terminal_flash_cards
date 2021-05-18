@@ -32,7 +32,7 @@ dbconn.raw('CREATE DATABASE IF NOT EXISTS flash_cards')
     `);
     await dbconn.raw(`
     INSERT INTO users (user, password) VALUES (
-      'trey', '$2b$12$bVNbKvaNkTMoOtDftmGH/uX5HHe/nF6f0jfVFsv7GCfPRWUiG9vKa'
+      'trey', '$2b$10$egGbYDVfBFbLqenM3BKLNe.b1/vG/Q7wRdBx3TA.BAGDIM0GLNX3O'
     );
     `);
     await dbconn.raw(`
