@@ -1,9 +1,11 @@
 // User account related routing.
 
 const express = require('express');
+const crypto = require('crypto');
 
 const dbconn = require('../src/dbConnection');
 const {checkSignIn, hashPassword} = require('../src/authorizations')
+const {createJson} = require('../src/saves');
 
 const router = express.Router();
 
@@ -32,12 +34,22 @@ router.post('/sign_up', async (req, res) => {
 
   const hash = await hashPassword(password)
 
-  dbconn('users').insert({
+  await dbconn('users').insert({
     user: user,
     password: hash,
+  })
+
+  const rows = await dbconn('users').select('id').where({user: user})
+  const userID = rows[0].id;
+
+  const fileName = await createJson();
+
+  dbconn('saves').insert({
+    user_id: userID,
+    file: fileName,
   }).then(() => {
-    res.status(200).json({message: 'Account successfully created!'});
-  });
+    res.status(201).json({message: 'Account successfully created!'});
+  })
 });
 
 module.exports = router;
