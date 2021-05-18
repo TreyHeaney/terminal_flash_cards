@@ -8,10 +8,12 @@ from flash_cards.displays.cards import ViewCardsPage, ManageCardsPage
 
 class PreviewGroupPage(Page):
     '''Page for previewing a group before you start a session with cards.'''
-    def __init__(self, context, group=None):
+    def __init__(self, context, group=None, verbose=False):
         super().__init__(context)
         self.selected_group = group
         self.name = 'Group Selection' if group is None else groups[group].name 
+        self.name = 'Verbose Card View' if verbose else self.name
+        self.verbose = verbose
 
     def display(self):
         super().predisplay()
@@ -24,7 +26,13 @@ class PreviewGroupPage(Page):
             selected_group = groups[self.selected_group]
             print('CARDS IN GROUP:')
             for card in selected_group.cards:
-                print(card.question)
+                padding = ((80 - len(card.question)) * '~') if self.verbose else ''
+                print(card.question + padding)
+                if self.verbose:
+                    print(f'ANSWER:       {card.answer}')
+                    print(f'SCORE:        {card.score}')
+                    print(f'WRONG STREAK: {card.wrong_streak}')
+                    print(f'LAST CORRECT: {card.last_correct}')
             print('\ns: Start new session, m: Manage Cards, v: View verbose card details')
             super().display(new_line=False)
 
@@ -39,11 +47,13 @@ class PreviewGroupPage(Page):
             if key == 's':
                 cards = groups[self.selected_group].cards
                 self.context.add_page(ViewCardsPage(self.context, cards))
-            if key == 'm':
+            elif key == 'm':
                 self.context.add_page(ManageCardsPage(self.context, 
                                                       self.selected_group))
-                # self.context.add_page(NewCardPage(self.context, 
-                #                                   self.selected_group))
+            elif key == 'v':
+                self.context.add_page(PreviewGroupPage(self.context,
+                                                       self.selected_group,
+                                                       verbose=True))
 
 class NewGroupPage(Page):
     '''Page for creation ofa new group.'''
