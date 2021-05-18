@@ -2,7 +2,8 @@
 
 import os
 import time
-from random import choice, random, shuffle
+from collections import deque
+from random import choices, random, shuffle
 
 from flash_cards.cards import Card
 from flash_cards.os_switches import clear_terminal
@@ -17,13 +18,29 @@ class ViewCardsPage(Page):
         super().__init__(context)
         self.name = 'Viewing Cards'
         self.cards = cards
+        self.previous = deque([], maxlen=2)
+        self.score_sum = [0, 0]
 
     def display(self):
         super().predisplay()
 
-        random_card = choice(self.cards)
+        # Draw a weighted random card.
+
+        if self.score_sum[1] % 3 == 0: 
+            self.score_sum[0] = sum([card.score for card in self.cards])
+        self.score_sum[1] += 1
+
+        weights = [1 - card.score / self.score_sum[0] for card in self.cards]
+
+        random_card = choices(self.cards, weights)[0]
+        while random_card in self.previous:
+            random_card = choices(self.cards, weights)[0]
+        self.previous.append(random_card)
+
         print(f'Card Strength: {random_card.score}')
         print(random_card.question + '\n')
+
+        # Shuffle the answers.
 
         shuffle(random_card.dummy_answers)
         answers = random_card.dummy_answers[:3] + [random_card.answer]
@@ -39,13 +56,14 @@ class ViewCardsPage(Page):
     def parse_input(self, key):
         super().parse_input(key)
 
-        key_index = ord(key) - 97        
+        key_index = ord(key) - 97 if key else ''
         if key_index not in [0, 1, 2, 3]:
             # Some sorta error would be preferrable here.
             return
 
         card = self.card
-        if self.answers[key_index] == card.answer:
+        answer_is_correct = self.answers[key_index] == card.answer
+        if answer_is_correct:
             time_since_correct = time.time() - card.last_correct
             card.score += calculate_points(time_since_correct,
                                            card.wrong_streak)
@@ -58,7 +76,7 @@ class ViewCardsPage(Page):
             card.wrong_streak += 1
 
             card.score -= calculate_loss(card.wrong_streak)
-            card.score = min((0, card.score))
+            card.score = max((0, card.score))
 
         self.display_answer(key_index)
 

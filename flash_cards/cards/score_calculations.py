@@ -6,7 +6,7 @@ def calculate_points(time_since_correct, wrong_streak):
     :return: Score gained. 
     '''
     score = max((0, time_since_correct / 15000))
-    score += 0.5
+    score += 0.333
     score = min(2, score)
     for _ in range(wrong_streak): score **= (1/3)
 

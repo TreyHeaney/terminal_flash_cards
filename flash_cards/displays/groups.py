@@ -23,16 +23,19 @@ class PreviewGroupPage(Page):
                 print(f'{index}: {group.name}')
             super().display()  
         else:
+            # If a group is selected.
             selected_group = groups[self.selected_group]
             print('CARDS IN GROUP:')
             for card in selected_group.cards:
                 padding = ((80 - len(card.question)) * '~') if self.verbose else ''
                 print(card.question + padding)
+
                 if self.verbose:
                     print(f'ANSWER:       {card.answer}')
                     print(f'SCORE:        {card.score}')
                     print(f'WRONG STREAK: {card.wrong_streak}')
                     print(f'LAST CORRECT: {card.last_correct}')
+
             print('\ns: Start new session, m: Manage Cards, v: View verbose card details')
             super().display(new_line=False)
 
