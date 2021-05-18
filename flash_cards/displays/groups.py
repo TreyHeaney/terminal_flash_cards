@@ -24,7 +24,7 @@ class PreviewGroupPage(Page):
             selected_group = groups[self.selected_group]
             print('CARDS IN GROUP:')
             for card in selected_group.cards:
-                print(f'{card.question}: {card.answer}')
+                print(card.question)
             print('\ns: Start new session, m: Manage Cards, v: View verbose card details')
             super().display(new_line=False)
 

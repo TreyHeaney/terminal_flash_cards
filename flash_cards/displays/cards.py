@@ -1,14 +1,17 @@
 '''Pages for viewing or managing cards.'''
 
 import os
+import time
 from random import choice, random, shuffle
 
 from flash_cards.cards import Card
 from flash_cards.cards.storage import groups
+from flash_cards.cards.score_calculations import calculate_points, calculate_loss
 from flash_cards.displays.page_template import Page
 
 
 class ViewCardsPage(Page):
+    '''View a single card and guess the answer.'''
     def __init__(self, context, cards=[]):
         super().__init__(context)
         self.name = 'Viewing Cards'
@@ -18,6 +21,7 @@ class ViewCardsPage(Page):
         super().predisplay()
 
         random_card = choice(self.cards)
+        print(f'Card Strength: {random_card.score}')
         print(random_card.question + '\n')
 
         shuffle(random_card.dummy_answers)
@@ -39,8 +43,19 @@ class ViewCardsPage(Page):
             # Some sorta error would be preferrable here.
             return
 
-        if self.answers[key_index] == self.card.answer:
-            pass
+        card = self.card
+        if self.answers[key_index] == card.answer:
+            time_since_correct = time.time() - card.last_correct
+            card.score = calculate_points(time_since_correct,
+                                          card.wrong_streak)
+
+            card.wrong_streak = 0
+
+            card.last_correct = time.time()
+        else:
+            card.score = calculate_loss(card.wrong_streak)
+
+            card.wrong_streak += 1
 
         self.display_answer(key_index)
 
