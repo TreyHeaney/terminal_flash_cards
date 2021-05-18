@@ -19,7 +19,6 @@ function checkSignIn(res, rows, unhashed_password) {
   if (rows.length > 0) {
     const {password, id} = rows[0];
     bcrypt.compare(unhashed_password, password, function(err, goodSignIn) {
-      console.log(err, goodSignIn)
       if (!err && goodSignIn) {
         const authorization = jwt.sign({
           id: id,
