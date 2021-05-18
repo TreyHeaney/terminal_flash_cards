@@ -10,7 +10,7 @@ class Card:
         self.dummy_answers = dummy_answers
         self.last_correct = last_correct
         self.score = score
-        self.wrong_streak = 0
+        self.wrong_streak = wrong_streak
 
 
 class Group:
