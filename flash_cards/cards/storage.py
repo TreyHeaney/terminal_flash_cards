@@ -53,7 +53,7 @@ def save(groups):
     dump(dictionary, file)
 
 
-user_logged_in = os.path.exists('./static/token.json')
+user_logged_in = False
 if user_logged_in:
     pass  # Pull the save from server.
 else: 

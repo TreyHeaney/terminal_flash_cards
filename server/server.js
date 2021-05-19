@@ -8,6 +8,12 @@ const port = 4444;
 
 app.use(express.json());
 
+app.use((req, res, next) => {
+  const {originalUrl, method} = req;
+  const spacing = originalUrl.length > 18 ? '' : ' '.repeat(20 - originalUrl.length);
+  console.log(Date.now(), '      ', originalUrl, spacing, method);
+  next();
+});
 app.use('/', userRoutes);
 app.use('/', saveRoutes);
 

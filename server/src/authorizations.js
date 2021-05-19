@@ -20,11 +20,7 @@ function checkSignIn(res, rows, unhashed_password) {
     const {password, id} = rows[0];
     bcrypt.compare(unhashed_password, password, function(err, goodSignIn) {
       if (!err && goodSignIn) {
-        const authorization = jwt.sign({
-          id: id,
-        },
-        jwtKey,
-        {expiresIn: '1w'});
+        const authorization = jwt.sign({id: id}, jwtKey);
 
         res.status(200).json({
           message: 'Login successful!',

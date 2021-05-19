@@ -1,3 +1,5 @@
+'''OS related pivots for multi-OS support.'''
+
 import platform
 
 if platform.system() == 'Windows':

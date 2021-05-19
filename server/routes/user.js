@@ -12,6 +12,7 @@ const router = express.Router();
 
 router.post('/sign_in', (req, res) => {
   const {user, password} = req.body;
+  console.log(req.body);
   dbconn('users').select('*').where({user: user})
     .then((rows) => {
       checkSignIn(res, rows, password);
