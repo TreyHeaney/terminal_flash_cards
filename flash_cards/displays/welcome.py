@@ -1,5 +1,6 @@
 from flash_cards.displays.page_template import Page
 from flash_cards.displays.groups import PreviewGroupPage, EditGroupPage
+from flash_cards.displays.account import AccountPage
 
 
 class WelcomePage(Page):
@@ -11,21 +12,26 @@ class WelcomePage(Page):
     def display(self):
         super().predisplay()
 
-        print('''   ______         __     _____            __    __
+        print(f'''   ______         __     _____            __    __
   / __/ ___ ____ / /    / ______ ________/ ___ / /
  / _// / _ `(_-</ _ \  / /__/ _ `/ __/ _  (_-</_/ 
 /_/ /_/\_,_/___/_//_/  \___/\_,_/_/  \_,_/___(_)  
                                                   
 
 a: Manage card groups
-b: View card groups''')
+b: View card groups
+c: {'Login or Signup'}''')
         
         super().display()
 
     def parse_input(self, key):
         super().parse_input(key)
         if key == 'a':
-            self.context.add_page(EditGroupPage(self.context))
+            new_page = EditGroupPage(self.context)
+            self.context.add_page(new_page)
         elif key == 'b':
-            self.context.add_page(PreviewGroupPage(self.context))
-            
+            new_page = PreviewGroupPage(self.context)
+            self.context.add_page(new_page)
+        elif key == 'c':
+            new_page = AccountPage(self.context)
+            self.context.add_page(new_page)

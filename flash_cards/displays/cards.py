@@ -6,10 +6,11 @@ from collections import deque
 from random import choices, random, shuffle
 
 from flash_cards.cards import Card
-from flash_cards.os_switches import clear_terminal
 from flash_cards.cards.storage import groups
 from flash_cards.cards.score_calculations import calculate_points, calculate_loss
+from flash_cards.displays.colors import colors
 from flash_cards.displays.page_template import Page
+from flash_cards.os_switches import clear_terminal
 
 
 class ViewCardsPage(Page):
@@ -18,7 +19,7 @@ class ViewCardsPage(Page):
         super().__init__(context)
         self.name = 'Viewing Cards'
         self.cards = cards
-        self.previous = deque([], maxlen=2)
+        self.previous = deque([], maxlen=min(len(self.cards) - 1, 2))
         self.score_sum = [0, 0]
 
     def display(self):
@@ -37,6 +38,7 @@ class ViewCardsPage(Page):
             random_card = choices(self.cards, weights)[0]
         self.previous.append(random_card)
 
+        self.last_score = random_card.score
         print(f'Card Strength: {random_card.score}')
         print(random_card.question + '\n')
 
@@ -56,10 +58,10 @@ class ViewCardsPage(Page):
     def parse_input(self, key):
         super().parse_input(key)
 
-        key_index = ord(key) - 97 if key else ''
-        if key_index not in [0, 1, 2, 3]:
-            # Some sorta error would be preferrable here.
-            return
+        if len(key) != 1: return
+
+        key_index = ord(key) - 97
+        if key_index not in [0, 1, 2, 3]: return
 
         card = self.card
         answer_is_correct = self.answers[key_index] == card.answer
@@ -84,15 +86,16 @@ class ViewCardsPage(Page):
         os.system(clear_terminal)
         super().predisplay()
 
+        print(f'Card Strength: {self.last_score} -> {self.card.score}')
         print(self.card.question + '\n')
 
         for number, answer in enumerate(self.answers):
             pre_text = ''
             letter = chr(97 + number)
             if number == key_index:
-                pre_text = '\033[91m'
+                pre_text = colors['red']
             if answer == self.card.answer:
-                pre_text = '\033[92m'
+                pre_text = colors['green']
             print(pre_text + f'{letter}: {answer}' + '\033[0m')
 
         super().display()

@@ -19,7 +19,7 @@ def calculate_loss(wrong_streak):
     :param wrong_streak: Number of wrong answerings since last correct.
     :return: Score lost.
     '''
-    return max(0, min(4, wrong_streak * 2))  # looks like a relu
+    return max(0, min(4, wrong_streak * 1.5))  # looks like a relu.
 
 
 if __name__ == '__main__':

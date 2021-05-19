@@ -23,7 +23,6 @@ class PreviewGroupPage(Page):
                 print(f'{index}: {group.name}')
             super().display()  
         else:
-            # If a group is selected.
             selected_group = groups[self.selected_group]
             print('CARDS IN GROUP:')
             for card in selected_group.cards:
@@ -42,21 +41,24 @@ class PreviewGroupPage(Page):
     def parse_input(self, key):
         super().parse_input(key)
         if self.selected_group is None:
-            print(key)
-            print([x for x in range(len(groups) + 1)])
-            if key in [str(x) for x in range(len(groups))]:
-                self.context.add_page(PreviewGroupPage(self.context, 0))
+            group_keys = [str(x) for x in range(len(groups))]
+            if key in group_keys:
+                new_page = PreviewGroupPage(self.context, int(key))
+                self.context.add_page(new_page)
         else:
             if key == 's':
                 cards = groups[self.selected_group].cards
-                self.context.add_page(ViewCardsPage(self.context, cards))
+
+                new_page = ViewCardsPage(self.context, cards)
+                self.context.add_page(new_page)
             elif key == 'm':
-                self.context.add_page(ManageCardsPage(self.context, 
-                                                      self.selected_group))
+                new_page = ManageCardsPage(self.context, self.selected_group)
+                self.context.add_page(new_page)
             elif key == 'v':
-                self.context.add_page(PreviewGroupPage(self.context,
-                                                       self.selected_group,
-                                                       verbose=True))
+                new_page = PreviewGroupPage(self.context,
+                                        self.selected_group,
+                                        verbose=True)
+                self.context.add_page(new_page)
 
 class NewGroupPage(Page):
     '''Page for creation ofa new group.'''
@@ -105,7 +107,11 @@ class EditGroupPage(Page):
     def parse_input(self, key):
         super().parse_input(key)
         if key == 'a': 
-            self.context.add_page(NewGroupPage(self.context))
-        if key in [chr(x) for x in range(98, 98 + len(groups) + 1)]:
+            new_page = NewGroupPage(self.context)
+            self.context.add_page(new_page)
+        
+        possible_groups = [chr(x) for x in range(98, 98 + len(groups) + 1)]
+        if key in possible_groups:
             index = ord(key) - 98
-            self.context.add_page(EditGroupPage(self.context, index))
+            new_page = EditGroupPage(self.context, index)
+            self.context.add_page(new_page)
