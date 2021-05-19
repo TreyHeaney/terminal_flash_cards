@@ -19,7 +19,7 @@ class ViewCardsPage(Page):
         super().__init__(context)
         self.name = 'Viewing Cards'
         self.cards = cards
-        self.previous = deque([], maxlen=min(len(self.cards) - 1, 2))
+        self.previous = deque([], maxlen=min(len(self.cards) - 2, 2))
         self.score_sum = [0, 0]
 
     def display(self):
@@ -31,7 +31,11 @@ class ViewCardsPage(Page):
             self.score_sum[0] = sum([card.score for card in self.cards])
         self.score_sum[1] += 1
 
-        weights = [1 - card.score / self.score_sum[0] for card in self.cards]
+        total_score = self.score_sum[0]
+        if total_score:
+            weights = [1 - card.score / total_score for card in self.cards]
+        else:
+            weights = [0 for _ in self.cards]
 
         random_card = choices(self.cards, weights)[0]
         while random_card in self.previous:
@@ -119,10 +123,10 @@ class NewCardPage(Page):
         )
 
         user_input = input('What are some faux answers for this card? (ENTER to stop)\n')
-        dummy_answers = [user_input]
+        dummy_answers = []
         while user_input.lower() != '':
-            user_input = input('')
             dummy_answers.append(user_input)
+            user_input = input('')
 
         new_card.dummy_answers = dummy_answers
         group_adding_card_to.cards.append(new_card)
