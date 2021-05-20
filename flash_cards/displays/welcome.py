@@ -1,5 +1,5 @@
 from flash_cards.accounts import current_user
-from flash_cards.displays.page_template import Page
+from flash_cards.displays.modules.page_template import Page
 from flash_cards.displays.groups import PreviewGroupPage, EditGroupPage
 from flash_cards.displays.account import AccountPage
 

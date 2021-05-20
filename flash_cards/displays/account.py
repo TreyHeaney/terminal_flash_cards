@@ -3,7 +3,7 @@ import requests
 import json
 from getpass import getpass
 from flash_cards.accounts import current_user
-from flash_cards.displays.page_template import Page
+from flash_cards.displays.modules.page_template import Page
 from flash_cards.src.networking import account_auth
 
 url = 'http://localhost:4444'

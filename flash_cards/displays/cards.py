@@ -8,8 +8,8 @@ from random import choices, random, shuffle
 from flash_cards.cards import Card
 from flash_cards.cards.storage import groups
 from flash_cards.cards.score_calculations import calculate_points, calculate_loss
-from flash_cards.displays.colors import colors
-from flash_cards.displays.page_template import Page
+from flash_cards.displays.modules.colors import colors
+from flash_cards.displays.modules.page_template import Page
 from flash_cards.os_switches import clear_terminal
 
 

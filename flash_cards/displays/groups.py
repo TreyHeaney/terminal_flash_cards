@@ -2,7 +2,7 @@
 
 from flash_cards.cards import Group
 from flash_cards.cards.storage import groups
-from flash_cards.displays.page_template import Page
+from flash_cards.displays.modules.page_template import Page
 from flash_cards.displays.cards import ViewCardsPage, ManageCardsPage
 
 
