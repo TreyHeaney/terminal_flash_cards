@@ -1,16 +1,22 @@
 '''Functions pertaining to persistent card storage.'''
 
 import os
+import requests
 from json import load, dump
 
 from flash_cards.cards import Group, Card
 
+server = 'http://localhost:4444'
+
 
 def load_save(file, is_json=False):
     '''Load the saved json of card and group states.'''
-    file = open(file) if not is_json else file
+    if not is_json:
+        file = open(file)
+        raw = load(file)
+    else:
+        raw = file
 
-    raw = load(file)
     groups = []
     for group in raw:
         current_group = Group(group, '', load_cards(raw[group]))
@@ -53,8 +59,23 @@ def save(groups):
     dump(dictionary, file)
 
 
-user_logged_in = False
+def pull_save():
+    '''Pulls a save from the server'''
+    file = open('./static/token.json')
+    
+    parsed_json = load(file)
+    headers = {"authorization": parsed_json['authorization']}
+    response = requests.get(server + '/save', headers=headers)
+    groups = load_save(response.json(), is_json=True)
+
+    file.close()
+
+local_save_exists = os.path.exists('./static/save.json')
+user_logged_in = False  # os.path.exists('./static/token.json')
 if user_logged_in:
-    pass  # Pull the save from server.
-else: 
-    groups = load_save('./static/save.json')
+    groups = pull_save()
+else:
+    if local_save_exists:
+        groups = load_save('./static/save.json')
+    else:
+        groups = []

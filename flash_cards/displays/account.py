@@ -1,25 +1,40 @@
+from os import stat_result
 import requests
 import json
 from getpass import getpass
 from flash_cards.displays.page_template import Page
+from flash_cards.src.networking import account_auth
 
 url = 'http://localhost:4444'
 
 
 class SignUpPage(Page):
+    '''Page for user sign ups.'''
     def __init__(self, context):
         super().__init__(context)
         self.name = 'Sign Up'
     
     def display(self):
         super().predisplay()
-        super().display()
+
+        user = input('Username: ')
+        password = getpass('Password: ')
+
+        _, message, _ = account_auth(user, password, new_account=True)
+
+        self.context.message = message
+
+        self.context.back()
+        self.context.back()
+        print('ENTER to complete sign up request.')
+
 
     def parse_input(self, key):
         super().parse_input(key)
 
 
 class SignInPage(Page):
+    '''Page for user sign ins.'''
     def __init__(self, context):
         super().__init__(context)
         self.name = 'Sign In'
@@ -29,28 +44,18 @@ class SignInPage(Page):
 
         user = input('Username: ')
         password = getpass('Password: ')
-
-        body = {'user': user, 'password': password}
-        headers = {'Content-Type': 'application/json'}
-        res = requests.post(url + '/sign_in', 
-                            data=json.dumps(body), 
-                            headers=headers)
         
-        res_json = res.json()
+        response, message, status = account_auth(user, password)
 
-        print(res.status_code)
-        print(dir(res))
+        self.context.message = message
 
-        if res_json['message']:
-            self.context.message = res_json['message']
-        
-        if res.status_code == 200:
+        if status == 200:
             file = open('./static/token.json', 'w')
-            json.dump(res_json, file)
+            json.dump(response.json(), file)
 
         self.context.back()
         self.context.back()
-        print('ENTER to complete login request.')
+        print('ENTER to complete sign in request.')
 
     def parse_input(self, key):
         super().parse_input(key)
@@ -63,9 +68,6 @@ class AccountPage(Page):
 
     def display(self):
         super().predisplay()
-
-
-
         print('a: Sign in')
         print('b: Sign up')
         super().display()

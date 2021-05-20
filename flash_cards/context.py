@@ -23,7 +23,7 @@ class PageContext:
     @message.setter
     def message(self, message):
         color = colors['red']
-        if message == 'Login successful!': color = colors['green']
+        if 'success' in message: color = colors['green']
 
         self._message = color + message + colors['reset']
 

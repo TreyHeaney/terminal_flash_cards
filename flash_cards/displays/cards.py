@@ -19,7 +19,8 @@ class ViewCardsPage(Page):
         super().__init__(context)
         self.name = 'Viewing Cards'
         self.cards = cards
-        self.previous = deque([], maxlen=min(len(self.cards) - 2, 2))
+        max_history = min(len(self.cards) - 2, int(len(self.cards) * 0.33))
+        self.previous = deque([], maxlen=max_history)
         self.score_sum = [0, 0]
 
     def display(self):
@@ -100,7 +101,7 @@ class ViewCardsPage(Page):
                 pre_text = colors['red']
             if answer == self.card.answer:
                 pre_text = colors['green']
-            print(pre_text + f'{letter}: {answer}' + '\033[0m')
+            print(pre_text + f'{letter}: {answer}' + colors['reset'])
 
         super().display()
         input('Press enter to continue.')

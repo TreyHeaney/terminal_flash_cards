@@ -34,6 +34,7 @@ function checkSignIn(res, rows, unhashed_password) {
     res.status(500).json({message: 'Account not found.'});
   }
 }
+
 /**
  * Hash a password.
  * @param {String} password Password to hash.

@@ -48,7 +48,7 @@ router.post('/sign_up', async (req, res) => {
     user_id: userID,
     file: fileName,
   }).then(() => {
-    res.status(201).json({message: 'Account successfully created!'});
+    res.status(201).json({message: 'Account successfully created! You can now sign in.'});
   }).catch((error) => handleError(error, res));
 });
 
