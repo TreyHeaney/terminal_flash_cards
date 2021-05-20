@@ -70,6 +70,7 @@ def pull_save():
 
     file.close()
 
+
 local_save_exists = os.path.exists('./static/save.json')
 user_logged_in = False  # os.path.exists('./static/token.json')
 if user_logged_in:

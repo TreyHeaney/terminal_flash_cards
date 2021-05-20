@@ -38,9 +38,9 @@ router.post('/sign_up', async (req, res) => {
     password: hash,
   }).catch((error) => handleError(error, res))
 
-  const rows = await dbconn('users').select('id').where({user: user})
+  const IDQueryRes = await dbconn('users').select('id').where({user: user})
     .catch((error) => handleError(error, res));
-  const userID = rows[0].id;
+  const userID = IDQueryRes[0].id;
 
   const fileName = await createJson();
 

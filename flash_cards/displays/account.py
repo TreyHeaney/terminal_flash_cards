@@ -2,6 +2,7 @@ from os import stat_result
 import requests
 import json
 from getpass import getpass
+from flash_cards.accounts import current_user
 from flash_cards.displays.page_template import Page
 from flash_cards.src.networking import account_auth
 
@@ -52,6 +53,7 @@ class SignInPage(Page):
         if status == 200:
             file = open('./static/token.json', 'w')
             json.dump(response.json(), file)
+            current_user.signed_in = True
 
         self.context.back()
         self.context.back()

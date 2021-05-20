@@ -1,3 +1,4 @@
+from flash_cards.accounts import current_user
 from flash_cards.displays.page_template import Page
 from flash_cards.displays.groups import PreviewGroupPage, EditGroupPage
 from flash_cards.displays.account import AccountPage
@@ -18,20 +19,24 @@ class WelcomePage(Page):
 /_/ /_/\_,_/___/_//_/  \___/\_,_/_/  \_,_/___(_)  
                                                   
 
-a: Manage card groups
-b: View card groups
-c: {'Login or Signup'}''')
+a: View card groups
+b: Manage Save
+c: {'Sign in or sign up' if not current_user.signed_in else 'Sign out'}''')
         
         super().display()
 
     def parse_input(self, key):
         super().parse_input(key)
+
         if key == 'a':
-            new_page = EditGroupPage(self.context)
-            self.context.add_page(new_page)
-        elif key == 'b':
             new_page = PreviewGroupPage(self.context)
             self.context.add_page(new_page)
+        elif key == 'b':
+            pass
         elif key == 'c':
-            new_page = AccountPage(self.context)
-            self.context.add_page(new_page)
+            if current_user.signed_in:
+                current_user.delete_token()
+                self.context.message = 'Signed out successfully!'
+            else:
+                new_page = AccountPage(self.context)
+                self.context.add_page(new_page)
