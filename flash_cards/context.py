@@ -1,7 +1,7 @@
 '''Manages the page view stack.'''
 
 from flash_cards.displays.welcome import WelcomePage
-from flash_cards.displays.modules.colors import colors
+from flash_cards.src.colors import colors
 
 class PageContext:
     def __init__(self):
@@ -13,6 +13,7 @@ class PageContext:
 
     def back(self):
         del self.page_stack[-1]
+        return self
 
     @property
     def message(self):

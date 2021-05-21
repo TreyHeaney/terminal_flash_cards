@@ -3,14 +3,15 @@
 import os
 import time
 from collections import deque
-from random import choices, random, shuffle
+from random import choices, shuffle
 
 from flash_cards.cards import Card
-from flash_cards.cards.storage import groups
-from flash_cards.cards.score_calculations import calculate_points, calculate_loss
-from flash_cards.displays.modules.colors import colors
-from flash_cards.displays.modules.page_template import Page
+from flash_cards.accounts import current_user
 from flash_cards.os_switches import clear_terminal
+from flash_cards.src.colors import colors
+from flash_cards.src.page_template import Page
+from flash_cards.src.score_calculations import calculate_points, calculate_loss
+
 
 
 class ViewCardsPage(Page):
@@ -189,7 +190,7 @@ class EditCardPage(Page):
 class ManageCardsPage(Page):
     def __init__(self, context, card_group):
         super().__init__(context)
-        self.card_group = groups[card_group]
+        self.card_group = current_user.card_groups[card_group]
         self.name = 'Manage Cards'
 
     def display(self):

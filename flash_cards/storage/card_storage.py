@@ -5,12 +5,14 @@ import requests
 from json import load, dump
 
 from flash_cards.cards import Group, Card
+from flash_cards.storage.directories import token_path
 
-server = 'http://localhost:4444'
+server = 'http://localhost:4444'  # Offload this to an .env or something.
 
 
 def load_save(file, is_json=False):
-    '''Load the saved json of card and group states.'''
+    '''Load a json of card and group states.'''
+    
     if not is_json:
         file = open(file)
         raw = load(file)
@@ -41,7 +43,7 @@ def load_cards(cards):
     return parsed
 
 
-def save(groups):
+def save(groups, directory):
     '''Statically store cards in json format.'''
     dictionary = {}
     for group in groups:
@@ -55,28 +57,16 @@ def save(groups):
             dictionary[group.name][card.question]['meta']['wrong_streak'] = card.wrong_streak
             dictionary[group.name][card.question]['meta']['last_correct'] = card.last_correct
 
-    file = open('./static/save.json', 'w')
-    dump(dictionary, file)
+    with open(directory, 'w') as file:
+        dump(dictionary, file)
 
 
 def pull_save():
     '''Pulls a save from the server'''
-    file = open('./static/token.json')
-    
-    parsed_json = load(file)
-    headers = {"authorization": parsed_json['authorization']}
-    response = requests.get(server + '/save', headers=headers)
-    groups = load_save(response.json(), is_json=True)
+    with open(token_path) as file:
+        token_json = load(file)
+        headers = {"authorization": token_json['authorization']}
+        response = requests.get(server + '/save', headers=headers)
+        groups = load_save(response.json(), is_json=True)
 
-    file.close()
-
-
-local_save_exists = os.path.exists('./static/save.json')
-user_logged_in = False  # os.path.exists('./static/token.json')
-if user_logged_in:
-    groups = pull_save()
-else:
-    if local_save_exists:
-        groups = load_save('./static/save.json')
-    else:
-        groups = []
+    return groups

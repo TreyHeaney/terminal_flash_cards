@@ -1,4 +1,6 @@
-from flash_cards.cards.storage import save, groups
+from flash_cards.storage.card_storage import save
+from flash_cards.storage.settings_storage import save_settings
+from flash_cards.accounts import current_user
 
 
 class Page:
@@ -9,7 +11,6 @@ class Page:
     def display(self, new_line=True):
         print(('\n' if new_line else '') + 'q: Quit, `: Back Page')
 
-
     def predisplay(self):
         print(' -> '.join([page.name for page in self.context.page_stack]))
         message = self.context.message
@@ -19,7 +20,11 @@ class Page:
 
     def parse_input(self, key):
         if key == 'q':
-            save(groups)
+            save(current_user.card_groups, 
+                 current_user.settings['save_location'])
+            save_settings(current_user.settings)
             quit()
         elif key == '`':
-            self.context.back()
+            page_count = len(self.context.page_stack)
+            
+            if page_count > 1: self.context.back()

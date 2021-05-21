@@ -3,8 +3,9 @@ import requests
 import json
 from getpass import getpass
 from flash_cards.accounts import current_user
-from flash_cards.displays.modules.page_template import Page
+from flash_cards.src.page_template import Page
 from flash_cards.src.networking import account_auth
+from flash_cards.storage.token_storage import save_token
 
 url = 'http://localhost:4444'
 
@@ -21,9 +22,9 @@ class SignUpPage(Page):
         user = input('Username: ')
         password = getpass('Password: ')
 
-        _, message, _ = account_auth(user, password, new_account=True)
+        _, server_message, _ = account_auth(user, password, new_account=True)
 
-        self.context.message = message
+        self.context.message = server_message
 
         self.context.back()
         self.context.back()
@@ -51,16 +52,13 @@ class SignInPage(Page):
         self.context.message = message
 
         if status == 200:
-            file = open('./static/token.json', 'w')
-            json.dump(response.json(), file)
+            save_token(response)
             current_user.signed_in = True
 
-        self.context.back()
-        self.context.back()
-        print('ENTER to complete sign in request.')
+        self.context.back().back()
 
-    def parse_input(self, key):
-        super().parse_input(key)
+        # The client still tries to accept input. Big design flaw...
+        print('ENTER to complete sign in request.')
 
 
 class AccountPage(Page):
