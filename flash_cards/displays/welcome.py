@@ -31,7 +31,7 @@ c: {'Sign in or sign up' if not current_user.signed_in else 'Sign out'}''')
         if key == 'a':
             message = current_user.load_cards()
             if message: self.context.message = message
-            
+
             new_page = PreviewGroupPage(self.context)
             self.context.add_page(new_page)
         elif key == 'b':

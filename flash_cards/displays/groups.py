@@ -7,9 +7,10 @@ from flash_cards.accounts import current_user
 
 
 class NewGroupPage(Page):
-    '''Page for creation ofa new group.'''
+    '''Page for creation of a new group.'''
     def __init__(self, context):
         super().__init__(context)
+        self.name = 'Group Creation'
 
     def display(self):
         print('Creating a new group.\n')
@@ -19,6 +20,8 @@ class NewGroupPage(Page):
         ) 
         current_user.card_groups.append(new_group)
         self.context.back()
+        self.context.message = 'Group successfully created!'
+        print('\nPress ENTER to complete group creation.')
 
     def parse_input(self, key):
         super().parse_input(key)
@@ -45,11 +48,16 @@ class EditGroupPage(Page):
             print(f'Editing card group "{edited_group.name}"\n')
             edited_group.name = input('New group name: ')
             edited_group.description = input('New group description: ')
-            delete_group = input('Delete group? (type \'yes\')\n') == 'yes'
-            
+            delete_group = input('Delete group? (type \'y\')\n') == 'y'
+            if delete_group: delete_group = input('Are you sure? This will remove all cards within the group and their scores. (type \'y\')\n') == 'y'
+
             if delete_group: del self.groups[self.group]
             
+            print('\nPress ENTER to finish editing group.')
+            self.context.message = 'Group successfully ' + 'deleted!' if delete_group else 'edited!' 
+
             self.context.back()
+
 
     def parse_input(self, key):
         super().parse_input(key)

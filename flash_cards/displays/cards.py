@@ -1,17 +1,17 @@
 '''Pages for viewing or managing cards.'''
 
 import os
+import random
 import time
 from collections import deque
 from random import choices, shuffle
 
-from flash_cards.cards import Card
+from flash_cards.cards import Card, draw_card
 from flash_cards.accounts import current_user
 from flash_cards.os_switches import clear_terminal
 from flash_cards.src.colors import colors
 from flash_cards.src.page_template import Page
 from flash_cards.src.score_calculations import calculate_points, calculate_loss
-
 
 
 class ViewCardsPage(Page):
@@ -21,35 +21,22 @@ class ViewCardsPage(Page):
         self.name = 'Viewing Cards'
         self.cards = cards
         max_history = min(len(self.cards) - 2, int(len(self.cards) * 0.33))
-        self.previous = deque([], maxlen=max_history)
-        self.score_sum = [0, 0]
+        self.recently_drawn = deque([], maxlen=max_history)
+        self.last_correct = True
 
     def display(self):
         super().predisplay()
+        random_card = draw_card(self.cards, 
+                                self.recently_drawn,
+                                draw_strong=not self.last_correct)
 
-        # Draw a weighted random card.
-
-        if self.score_sum[1] % 3 == 0: 
-            self.score_sum[0] = sum([card.score for card in self.cards])
-        self.score_sum[1] += 1
-
-        total_score = self.score_sum[0]
-        if total_score:
-            weights = [1 - card.score / total_score for card in self.cards]
-        else:
-            weights = [0 for _ in self.cards]
-
-        random_card = choices(self.cards, weights)[0]
-        while random_card in self.previous:
-            random_card = choices(self.cards, weights)[0]
-        self.previous.append(random_card)
+        self.recently_drawn.append(random_card)
 
         self.last_score = random_card.score
         print(f'Card Strength: {random_card.score}')
         print(random_card.question + '\n')
 
         # Shuffle the answers.
-
         shuffle(random_card.dummy_answers)
         answers = random_card.dummy_answers[:3] + [random_card.answer]
         shuffle(answers)
@@ -66,8 +53,9 @@ class ViewCardsPage(Page):
 
         if len(key) != 1: return
 
-        key_index = ord(key) - 97
-        if key_index not in [0, 1, 2, 3]: return
+        alphabet_start_ord = 97
+        key_index = ord(key) - alphabet_start_ord
+        if key_index not in [x for x in range(len(self.answers))]: return
 
         card = self.card
         answer_is_correct = self.answers[key_index] == card.answer
@@ -80,11 +68,15 @@ class ViewCardsPage(Page):
             card.wrong_streak = 0
 
             card.last_correct = time.time()
+            
+            self.last_correct = True
         else:
             card.wrong_streak += 1
 
             card.score -= calculate_loss(card.wrong_streak)
             card.score = max((0, card.score))
+
+            self.last_correct = False
 
         self.display_answer(key_index)
 
