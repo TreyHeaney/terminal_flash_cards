@@ -1,6 +1,3 @@
-from os import stat_result
-import requests
-import json
 from getpass import getpass
 from flash_cards.accounts import current_user
 from flash_cards.src.page_template import Page

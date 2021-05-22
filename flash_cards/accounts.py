@@ -5,7 +5,6 @@ from flash_cards.storage.directories import cached_save_path
 from flash_cards.storage.card_storage import load_save, save, pull_save
 
 
-
 class User:
     def __init__(self):
         self.signed_in = os.path.exists('./static/token.json')
@@ -19,7 +18,7 @@ class User:
 
     def load_cards(self):
         save_path = self.settings['save_location']
-        # This logic is bloated.
+        # This is a bit bloated.
         message = ''
         if save_path == cached_save_path:
             try:
