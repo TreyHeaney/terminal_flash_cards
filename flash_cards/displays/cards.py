@@ -1,15 +1,17 @@
 '''Pages for viewing or managing cards.'''
 
 import os
+import random
 import time
 from collections import deque
-from random import choices, random, shuffle
+from random import choices, shuffle
 
-from flash_cards.cards import Card
+from flash_cards.cards import Card, draw_card
+from flash_cards.accounts import current_user
 from flash_cards.os_switches import clear_terminal
-from flash_cards.cards.storage import groups
-from flash_cards.cards.score_calculations import calculate_points, calculate_loss
-from flash_cards.displays.page_template import Page
+from flash_cards.src.colors import colors
+from flash_cards.src.page_template import Page
+from flash_cards.src.score_calculations import calculate_points, calculate_loss
 
 
 class ViewCardsPage(Page):
@@ -18,30 +20,23 @@ class ViewCardsPage(Page):
         super().__init__(context)
         self.name = 'Viewing Cards'
         self.cards = cards
-        self.previous = deque([], maxlen=2)
-        self.score_sum = [0, 0]
+        max_history = min(len(self.cards) - 2, int(len(self.cards) * 0.33))
+        self.recently_drawn = deque([], maxlen=max_history)
+        self.last_correct = True
 
     def display(self):
         super().predisplay()
+        random_card = draw_card(self.cards, 
+                                self.recently_drawn,
+                                draw_strong=not self.last_correct)
 
-        # Draw a weighted random card.
+        self.recently_drawn.append(random_card)
 
-        if self.score_sum[1] % 3 == 0: 
-            self.score_sum[0] = sum([card.score for card in self.cards])
-        self.score_sum[1] += 1
-
-        weights = [1 - card.score / self.score_sum[0] for card in self.cards]
-
-        random_card = choices(self.cards, weights)[0]
-        while random_card in self.previous:
-            random_card = choices(self.cards, weights)[0]
-        self.previous.append(random_card)
-
+        self.last_score = random_card.score
         print(f'Card Strength: {random_card.score}')
         print(random_card.question + '\n')
 
         # Shuffle the answers.
-
         shuffle(random_card.dummy_answers)
         answers = random_card.dummy_answers[:3] + [random_card.answer]
         shuffle(answers)
@@ -56,10 +51,11 @@ class ViewCardsPage(Page):
     def parse_input(self, key):
         super().parse_input(key)
 
-        key_index = ord(key) - 97 if key else ''
-        if key_index not in [0, 1, 2, 3]:
-            # Some sorta error would be preferrable here.
-            return
+        if len(key) != 1: return
+
+        alphabet_start_ord = 97
+        key_index = ord(key) - alphabet_start_ord
+        if key_index not in [x for x in range(len(self.answers))]: return
 
         card = self.card
         answer_is_correct = self.answers[key_index] == card.answer
@@ -72,11 +68,15 @@ class ViewCardsPage(Page):
             card.wrong_streak = 0
 
             card.last_correct = time.time()
+            
+            self.last_correct = True
         else:
             card.wrong_streak += 1
 
             card.score -= calculate_loss(card.wrong_streak)
             card.score = max((0, card.score))
+
+            self.last_correct = False
 
         self.display_answer(key_index)
 
@@ -84,16 +84,17 @@ class ViewCardsPage(Page):
         os.system(clear_terminal)
         super().predisplay()
 
+        print(f'Card Strength: {self.last_score} -> {self.card.score}')
         print(self.card.question + '\n')
 
         for number, answer in enumerate(self.answers):
             pre_text = ''
             letter = chr(97 + number)
             if number == key_index:
-                pre_text = '\033[91m'
+                pre_text = colors['red']
             if answer == self.card.answer:
-                pre_text = '\033[92m'
-            print(pre_text + f'{letter}: {answer}' + '\033[0m')
+                pre_text = colors['green']
+            print(pre_text + f'{letter}: {answer}' + colors['reset'])
 
         super().display()
         input('Press enter to continue.')
@@ -116,10 +117,10 @@ class NewCardPage(Page):
         )
 
         user_input = input('What are some faux answers for this card? (ENTER to stop)\n')
-        dummy_answers = [user_input]
+        dummy_answers = []
         while user_input.lower() != '':
-            user_input = input('')
             dummy_answers.append(user_input)
+            user_input = input('')
 
         new_card.dummy_answers = dummy_answers
         group_adding_card_to.cards.append(new_card)
@@ -181,7 +182,7 @@ class EditCardPage(Page):
 class ManageCardsPage(Page):
     def __init__(self, context, card_group):
         super().__init__(context)
-        self.card_group = groups[card_group]
+        self.card_group = current_user.card_groups[card_group]
         self.name = 'Manage Cards'
 
     def display(self):
