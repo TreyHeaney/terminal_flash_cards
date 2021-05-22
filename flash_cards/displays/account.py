@@ -8,7 +8,6 @@ url = 'http://localhost:4444'
 
 
 class SignUpPage(Page):
-    '''Page for user sign ups.'''
     def __init__(self, context):
         super().__init__(context)
         self.name = 'Sign Up'
@@ -33,7 +32,6 @@ class SignUpPage(Page):
 
 
 class SignInPage(Page):
-    '''Page for user sign ins.'''
     def __init__(self, context):
         super().__init__(context)
         self.name = 'Sign In'
