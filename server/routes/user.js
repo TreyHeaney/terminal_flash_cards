@@ -26,16 +26,16 @@ router.post('/sign_up', async (req, res) => {
     .catch((error) => handleError(error, res));
 
   if (existingUser.length > 0) {
-    res.status(500).json({message: 'Username already in use.'});
+    res.status(409).json({message: 'Username already in use.'});
     return;
   }
 
-  const hash = await hashPassword(password)
+  const passwordHash = await hashPassword(password)
     .catch((error) => handleError(error, res));
 
   await dbconn('users').insert({
     user: user,
-    password: hash,
+    password: passwordHash,
   }).catch((error) => handleError(error, res))
 
   const IDQueryRes = await dbconn('users').select('id').where({user: user})

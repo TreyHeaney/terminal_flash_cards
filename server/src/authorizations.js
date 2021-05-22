@@ -27,11 +27,11 @@ function checkSignIn(res, rows, unhashed_password) {
           authorization: authorization,
         });
       } else {
-        res.status(500).json({message: 'Incorrect password.'});
+        res.status(401).json({message: 'Incorrect password.'});
       }
     });
   } else {
-    res.status(500).json({message: 'Account not found.'});
+    res.status(401).json({message: 'Account not found.'});
   }
 }
 
