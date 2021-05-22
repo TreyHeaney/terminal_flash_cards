@@ -1,5 +1,6 @@
-from flash_cards.storage.card_storage import save
+from flash_cards.storage.card_storage import push_save, save
 from flash_cards.storage.settings_storage import save_settings
+from flash_cards.storage.directories import cached_save_path
 from flash_cards.accounts import current_user
 
 
@@ -20,9 +21,16 @@ class Page:
 
     def parse_input(self, key):
         if key == 'q':
-            save(current_user.card_groups, 
-                 current_user.settings['save_location'])
+            save_dict = save(current_user.card_groups, 
+                             current_user.settings['save_location'])
+
+            print(save_dict)
+
+            using_remote_save = current_user.settings['save_location'] == cached_save_path
+            if using_remote_save: push_save(save_dict)
+
             save_settings(current_user.settings)
+
             quit()
         elif key == '`':
             page_count = len(self.context.page_stack)

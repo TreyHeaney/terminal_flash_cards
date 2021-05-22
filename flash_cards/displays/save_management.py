@@ -31,3 +31,5 @@ class ManageSavePage(Page):
             user_input = input(message)
             if user_input:
                 current_user.settings['save_location'] = user_input
+
+        current_user.load_cards()

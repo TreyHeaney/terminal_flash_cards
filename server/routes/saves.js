@@ -13,6 +13,7 @@ const router = express.Router();
 
 router.post('/save', userAuth, (req, res) => {
   const {id} = req.tokenKeys;
+  console.log(req.body);
   dbconn('saves').select('*').where({user_id: id})
     .then((rows) => {
       const fileName = rows[0].file;

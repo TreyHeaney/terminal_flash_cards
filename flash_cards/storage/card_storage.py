@@ -2,7 +2,7 @@
 
 import os
 import requests
-from json import load, dump
+import json
 
 from flash_cards.cards import Group, Card
 from flash_cards.storage.directories import token_path
@@ -15,7 +15,7 @@ def load_save(file, is_json=False):
     
     if not is_json:
         file = open(file)
-        raw = load(file)
+        raw = json.load(file)
     else:
         raw = file
 
@@ -58,15 +58,27 @@ def save(groups, directory):
             dictionary[group.name][card.question]['meta']['last_correct'] = card.last_correct
 
     with open(directory, 'w') as file:
-        dump(dictionary, file)
+        json.dump(dictionary, file)
+
+    return dictionary
 
 
 def pull_save():
-    '''Pulls a save from the server'''
+    '''Pulls a save from the server.'''
     with open(token_path) as file:
-        token_json = load(file)
+        token_json = json.load(file)
         headers = {"authorization": token_json['authorization']}
         response = requests.get(server + '/save', headers=headers)
         groups = load_save(response.json(), is_json=True)
 
     return groups
+
+
+def push_save(save):
+    '''Pushes a save to the server.'''
+    with open(token_path) as file:
+        token_json = json.load(file)
+        headers = {"authorization": token_json['authorization']}
+        response = requests.post(server + '/save', json=save, headers=headers)
+
+    return response
