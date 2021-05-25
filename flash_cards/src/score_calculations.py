@@ -7,7 +7,7 @@ def calculate_points(time_since_correct, wrong_streak):
     '''
     score = max((0, time_since_correct / 15000))
     score += 0.333
-    score = min(2, score)
+    score = min(4, score)
     for _ in range(wrong_streak): score **= (1/3)
 
     return score 

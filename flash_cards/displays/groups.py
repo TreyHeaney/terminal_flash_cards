@@ -45,19 +45,24 @@ class EditGroupPage(Page):
             super().display()
         else: 
             edited_group = self.groups[self.group]
-            print(f'Editing card group "{edited_group.name}"\n')
-            edited_group.name = input('New group name: ')
-            edited_group.description = input('New group description: ')
+            print(f'Editing card group "{edited_group.name} (ENTER to pass)"\n')
+            group_name = input('New group name: ')
+            if group_name: edited_group.name = group_name
+            else: print(edited_group.name)
+
+            description = input('New group description: ')
+            if description: edited_group.description = description
+            else: print(edited_group.description)
+
             delete_group = input('Delete group? (type \'y\')\n') == 'y'
             if delete_group: delete_group = input('Are you sure? This will remove all cards within the group and their scores. (type \'y\')\n') == 'y'
 
             if delete_group: del self.groups[self.group]
             
             print('\nPress ENTER to finish editing group.')
-            self.context.message = 'Group successfully ' + 'deleted!' if delete_group else 'edited!' 
+            self.context.message = 'Group successfully ' + ('deleted!' if delete_group else 'edited!') 
 
             self.context.back()
-
 
     def parse_input(self, key):
         super().parse_input(key)

@@ -20,7 +20,7 @@ class ViewCardsPage(Page):
         super().__init__(context)
         self.name = 'Viewing Cards'
         self.cards = cards
-        max_history = min(len(self.cards) - 2, int(len(self.cards) * 0.33))
+        max_history = int(len(self.cards) * 0.4)
         self.recently_drawn = deque([], maxlen=max_history)
         self.last_correct = True
 
@@ -63,7 +63,7 @@ class ViewCardsPage(Page):
             time_since_correct = time.time() - card.last_correct
             card.score += calculate_points(time_since_correct,
                                            card.wrong_streak)
-            card.score = min((10, card.score))
+            card.score = min((100, card.score))
 
             card.wrong_streak = 0
 

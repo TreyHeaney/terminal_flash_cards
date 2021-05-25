@@ -6,8 +6,7 @@ import json
 
 from flash_cards.cards import Group, Card
 from flash_cards.storage.directories import token_path
-
-server = 'http://localhost:4444'  # Offload this to an .env or something.
+from flash_cards.storage.server import server
 
 
 def load_save(file, is_json=False):
