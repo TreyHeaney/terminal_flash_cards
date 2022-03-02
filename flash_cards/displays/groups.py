@@ -2,7 +2,7 @@
 
 from flash_cards.cards import Group
 from flash_cards.src.page_template import Page
-from flash_cards.displays.cards import ViewCardsPage, ManageCardsPage
+from flash_cards.displays.cards import MultipleChoicePage, ManageCardsPage, FlashCardPage
 from flash_cards.accounts import current_user
 
 
@@ -107,7 +107,7 @@ class PreviewGroupPage(Page):
                     print(f'WRONG STREAK: {card.wrong_streak}')
                     print(f'LAST CORRECT: {card.last_correct}')
 
-            print('\ns: Start Session, m: Manage Cards, v: Verbose View')
+            print('''\ns: Multiple Choice, n: Flash Card \nm: Manage Cards, v: Verbose View''')
         
         super().display(new_line=False)
 
@@ -126,7 +126,13 @@ class PreviewGroupPage(Page):
             if key == 's':
                 cards = self.groups[self.selected_group].cards
 
-                new_page = ViewCardsPage(self.context, cards)
+                new_page = MultipleChoicePage(self.context, cards)
+                self.context.add_page(new_page)
+            if key == 'n':
+                cards = self.groups[self.selected_group].cards
+
+                new_page = FlashCardPage(self.context, cards)
+
                 self.context.add_page(new_page)
             elif key == 'm':
                 new_page = ManageCardsPage(self.context, self.selected_group)

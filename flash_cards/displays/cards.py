@@ -12,10 +12,44 @@ from flash_cards.os_switches import clear_terminal
 from flash_cards.src.colors import colors
 from flash_cards.src.page_template import Page
 from flash_cards.src.score_calculations import calculate_points, calculate_loss
+from flash_cards.storage.card_storage import save, push_save
+from flash_cards.storage.directories import cached_save_path
 
+ord_alphabet_start = 97
+visual_padding = '\n\n\n\n'
 
-class ViewCardsPage(Page):
-    '''View a single card and guess the answer.'''
+class FlashCardPage(Page):
+    '''View a single card and guess the answer (no lying...)'''
+    def __init__(self, context, cards=[]):
+        super().__init__(context)
+        self.cards = cards
+        max_history = int(len(self.cards) * 0.4)
+        self.recently_drawn = deque([], maxlen=max_history)
+        self.last_correct = True
+        self.random_card = None
+
+    def display(self):
+        super().predisplay()
+        
+        if self.random_card is None:
+            self.random_card = draw_card(self.cards, 
+                                         self.recently_drawn,
+                                         draw_easy=not self.last_correct)
+            self.recently_drawn.append(self.random_card)
+            self.last_score = self.random_card.score
+
+            print(f'Card Strength: {self.random_card.score}')
+            print(self.random_card.question + visual_padding)
+        else:
+            print(f'Card Strength: {self.random_card.score}')
+            print(self.random_card.question + visual_padding)
+            print(self.random_card.answer)
+            self.random_card = None
+
+        super().display()
+
+class MultipleChoicePage(Page):
+    '''View a single card and choose the answer out of 4.'''
     def __init__(self, context, cards=[]):
         super().__init__(context)
         self.name = 'Viewing Cards'
@@ -28,21 +62,22 @@ class ViewCardsPage(Page):
         super().predisplay()
         random_card = draw_card(self.cards, 
                                 self.recently_drawn,
-                                draw_strong=not self.last_correct)
+                                draw_easy=not self.last_correct)
 
         self.recently_drawn.append(random_card)
-
         self.last_score = random_card.score
-        print(f'Card Strength: {random_card.score}')
-        print(random_card.question + '\n')
 
-        # Shuffle the answers.
+        print(f'Card Strength: {random_card.score}')
+        print(random_card.question + visual_padding)
+
+        # Shuffle the answer in with random dummy answers.
         shuffle(random_card.dummy_answers)
         answers = random_card.dummy_answers[:3] + [random_card.answer]
         shuffle(answers)
-        for number, answer in enumerate(answers):
-            letter = chr(97 + number)
-            print(f'{letter}: {answer}')
+
+        for index, answer_text in enumerate(answers):
+            letter = chr(ord_alphabet_start + index)
+            print(f'{letter}: {answer_text}')
 
         self.answers = answers
         self.card = random_card
@@ -53,48 +88,47 @@ class ViewCardsPage(Page):
 
         if len(key) != 1: return
 
-        alphabet_start_ord = 97
-        key_index = ord(key) - alphabet_start_ord
-        if key_index not in [x for x in range(len(self.answers))]: return
+        response_index = ord(key) - ord_alphabet_start
+        possible_answers = [x for x in range(len(self.answers))]
+        if response_index not in possible_answers: return
 
         card = self.card
-        answer_is_correct = self.answers[key_index] == card.answer
+        answer_is_correct = self.answers[response_index] == card.answer
         if answer_is_correct:
             time_since_correct = time.time() - card.last_correct
             card.score += calculate_points(time_since_correct,
                                            card.wrong_streak)
             card.score = min((100, card.score))
-
             card.wrong_streak = 0
-
             card.last_correct = time.time()
-            
+
             self.last_correct = True
         else:
             card.wrong_streak += 1
-
             card.score -= calculate_loss(card.wrong_streak)
             card.score = max((0, card.score))
 
             self.last_correct = False
 
-        self.display_answer(key_index)
+        self.display_answer(response_index)
 
-    def display_answer(self, key_index):
+    def display_answer(self, response_index):
+        '''Displays color coded answer to a card.'''
         os.system(clear_terminal)
         super().predisplay()
 
         print(f'Card Strength: {self.last_score} -> {self.card.score}')
-        print(self.card.question + '\n')
+        visual_padding = '\n\n\n\n\n\n\n'
+        print(self.card.question + visual_padding)
 
-        for number, answer in enumerate(self.answers):
+        for choice_index, choice_text in enumerate(self.answers):
             pre_text = ''
-            letter = chr(97 + number)
-            if number == key_index:
+            letter = chr(97 + choice_index)
+            if choice_index == response_index:
                 pre_text = colors['red']
-            if answer == self.card.answer:
+            if choice_text == self.card.answer:
                 pre_text = colors['green']
-            print(pre_text + f'{letter}: {answer}' + colors['reset'])
+            print(pre_text + f'{letter}: {choice_text}' + colors['reset'])
 
         super().display()
         input('Press enter to continue.')
@@ -123,8 +157,15 @@ class NewCardPage(Page):
             user_input = input('')
 
         new_card.dummy_answers = dummy_answers
-        group_adding_card_to.cards.append(new_card)
-        
+        group_adding_card_to.cards.append(new_card)    
+
+        # Save everything new.
+        save_dict = save(current_user.card_groups, 
+                    current_user.settings['save_location'])
+
+        using_remote_save = current_user.settings['save_location'] == cached_save_path
+        if using_remote_save: push_save(save_dict)
+
         self.context.back()
         print('Completed card creation, press ENTER.')
 
@@ -142,7 +183,6 @@ class EditCardPage(Page):
 
     def display(self):
         super().predisplay()
-        
         card = self.card
 
         print('Enter updated card question (ENTER to skip, X to delete)')

@@ -22,13 +22,13 @@ class Group:
         self.cards = cards
 
 
-def draw_card(cards, recently_drawn, draw_strong=False):
+def draw_card(cards, recently_drawn, draw_easy=False):
     '''
     Draw a weighted random card from a group of cards.
     '''
     score_sum = sum([card.score for card in cards])
     if score_sum > 0: 
-        if not draw_strong:
+        if not draw_easy:
             weights = [1 - card.score / score_sum for card in cards]
         else:
             weights = [card.score / score_sum for card in cards]

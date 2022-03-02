@@ -24,8 +24,6 @@ class Page:
             save_dict = save(current_user.card_groups, 
                              current_user.settings['save_location'])
 
-            print(save_dict)
-
             using_remote_save = current_user.settings['save_location'] == cached_save_path
             if using_remote_save: push_save(save_dict)
 
