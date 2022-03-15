@@ -19,9 +19,10 @@ ord_alphabet_start = 97
 visual_padding = '\n\n\n\n'
 
 class FlashCardPage(Page):
-    '''View a single card and guess the answer (no lying...)'''
+    '''View a single card and guess the answer'''
     def __init__(self, context, cards=[]):
         super().__init__(context)
+        self.name = 'Flash Card Page'
         self.cards = cards
         max_history = int(len(self.cards) * 0.4)
         self.recently_drawn = deque([], maxlen=max_history)
@@ -118,7 +119,6 @@ class MultipleChoicePage(Page):
         super().predisplay()
 
         print(f'Card Strength: {self.last_score} -> {self.card.score}')
-        visual_padding = '\n\n\n\n\n\n\n'
         print(self.card.question + visual_padding)
 
         for choice_index, choice_text in enumerate(self.answers):

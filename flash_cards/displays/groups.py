@@ -56,7 +56,6 @@ class EditGroupPage(Page):
 
             delete_group = input('Delete group? (type \'y\')\n') == 'y'
             if delete_group: delete_group = input('Are you sure? This will remove all cards within the group and their scores. (type \'y\')\n') == 'y'
-
             if delete_group: del self.groups[self.group]
             
             print('\nPress ENTER to finish editing group.')
@@ -69,8 +68,8 @@ class EditGroupPage(Page):
         if key == '0': 
             new_page = NewGroupPage(self.context)
             self.context.add_page(new_page)
-        possible_groups = [str(x) for x in range(1, len(current_user.card_groups) + 1)]
-        if key in possible_groups:
+        valid_groups = [str(x) for x in range(1, len(current_user.card_groups) + 1)]
+        if key in valid_groups:
             index = int(key) - 1
             new_page = EditGroupPage(self.context, index)
             self.context.add_page(new_page)
@@ -107,7 +106,7 @@ class PreviewGroupPage(Page):
                     print(f'WRONG STREAK: {card.wrong_streak}')
                     print(f'LAST CORRECT: {card.last_correct}')
 
-            print('''\ns: Multiple Choice, n: Flash Card \nm: Manage Cards, v: Verbose View''')
+            print('''\nc: Multiple Choice, n: Flash Card \nm: Manage Cards, v: Verbose View''')
         
         super().display(new_line=False)
 
@@ -123,7 +122,7 @@ class PreviewGroupPage(Page):
                 new_page = EditGroupPage(self.context)
                 self.context.add_page(new_page)
         else:
-            if key == 's':
+            if key == 'c':
                 cards = self.groups[self.selected_group].cards
 
                 new_page = MultipleChoicePage(self.context, cards)

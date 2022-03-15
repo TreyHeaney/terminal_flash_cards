@@ -1,5 +1,7 @@
-This really isn't for anyone else, I'll just leave it out of the gitignore so you can see how epic my workflow is. Unless you want to make a pull request...?
 # TODO
+
+> Allow users to upload card groups others can download ... ?
+> . Card group keys.
 > Add card type groups (text, number, etc.)
 > Add custom card types
 > Draw dummy answers from pool of similar card types in same group.
