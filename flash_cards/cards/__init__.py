@@ -27,13 +27,13 @@ def draw_card(cards, recently_drawn, draw_strong=False):
     Draw a weighted random card from a group of cards.
     '''
     score_sum = sum([card.score for card in cards])
-    if score_sum > 0: 
+    if score_sum > 0: 0
         if not draw_strong:
             weights = [1 - card.score / score_sum for card in cards]
         else:
             weights = [card.score / score_sum for card in cards]
     else: 
-        weights = [0 for _ in cards]
+        weights = [1 for _ in cards]
     
     random_card = choices(cards, weights)[0]
     while random_card in recently_drawn:
