@@ -48,14 +48,16 @@ def save(groups, directory):
     dictionary = {}
     for group in groups:
         dictionary[group.name] = {}
+        curr_group = dictionary[group.name]
         for card in group.cards:
-            dictionary[group.name][card.question] = {}
-            dictionary[group.name][card.question]['meta'] = {}
+            curr_group[card.question] = {}
+            curr_question = curr_group[card.question]
+            curr_question['meta'] = {}
             
-            dictionary[group.name][card.question]['answers'] = [card.answer] + card.dummy_answers
-            dictionary[group.name][card.question]['meta']['score'] = card.score
-            dictionary[group.name][card.question]['meta']['wrong_streak'] = card.wrong_streak
-            dictionary[group.name][card.question]['meta']['last_correct'] = card.last_correct
+            curr_question['answers'] = [card.answer] + card.dummy_answers
+            curr_question['meta']['score'] = card.score
+            curr_question['meta']['wrong_streak'] = card.wrong_streak
+            curr_question['meta']['last_correct'] = card.last_correct
 
     with open(directory, 'w') as file:
         dump(dictionary, file)
