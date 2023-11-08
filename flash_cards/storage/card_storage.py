@@ -44,7 +44,7 @@ def load_cards(cards):
 
 
 def save(groups, directory):
-    '''Statically store cards in json format.'''
+    '''store cards in json format.'''
     dictionary = {}
     for group in groups:
         dictionary[group.name] = {}
