@@ -43,10 +43,9 @@ collection of card groups and each card group is a collection of cards.
 Every card has a hidden "score" that abstracts your mastery of that card. 
 Answering *correctly increases* the score, *decreasing the liklihood* it will be 
 displayed, and answering *incorrectly decreases* your score, *increasing the
-likihood* it will be displayed. If you answer a card correctly, subsequently 
-answering it correctly will cause a larger increase in it's score. The longer
-the time between subsequent correct answers the larger the increase of the
-score. 
+likihood* it will be displayed. If you answer a card correctly, subsequent
+correct answers will cause a larger increase in it's score. The longer the time 
+since the last correct answer the larger the increase in score.
 
 Whenever a card is incorrectly answered a "strong draw" is triggered. A strong
 draw inverts card draw liklihoods, helping to associate information you've
