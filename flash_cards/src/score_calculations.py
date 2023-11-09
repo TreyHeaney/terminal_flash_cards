@@ -15,7 +15,7 @@ def calculate_points(time_since_correct, wrong_streak):
 
 def calculate_loss(wrong_streak):
     '''
-    Calculate points lossed by getting a card incorrect.
+    Calculate points loss by getting a card incorrect.
     :param wrong_streak: Number of wrong answerings since last correct.
     :return: Score lost.
     '''

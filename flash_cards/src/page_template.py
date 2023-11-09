@@ -1,6 +1,6 @@
+from flash_cards.accounts import current_user
 from flash_cards.storage.card_storage import save
 from flash_cards.storage.settings_storage import save_settings
-from flash_cards.accounts import current_user
 
 
 class Page:
@@ -12,7 +12,8 @@ class Page:
         print(('\n' if new_line else '') + 'q: Quit, `: Back Page')
 
     def predisplay(self):
-        print(' -> '.join([page.name for page in self.context.page_stack]))
+        page_names = [page.name for page in self.context.page_stack]
+        print(' -> '.join(page_names))
         message = self.context.message
         if message:
             print(message)

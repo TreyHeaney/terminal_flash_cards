@@ -63,7 +63,7 @@ def save(groups, directory):
         dump(dictionary, file)
 
 
-def pull_save():
+def download_save():
     '''Pulls a save from the server'''
     with open(token_path) as file:
         token_json = load(file)

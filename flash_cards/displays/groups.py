@@ -54,7 +54,9 @@ class EditGroupPage(Page):
             if delete_group: del self.groups[self.group]
             
             print('\nPress ENTER to finish editing group.')
-            self.context.message = 'Group successfully ' + 'deleted!' if delete_group else 'edited!' 
+            message = 'Group successfully '
+            message += 'deleted!' if delete_group else 'edited!'
+            self.context.message = message
 
             self.context.back()
 
@@ -64,7 +66,11 @@ class EditGroupPage(Page):
         if key == '0': 
             new_page = NewGroupPage(self.context)
             self.context.add_page(new_page)
-        possible_groups = [str(x) for x in range(1, len(current_user.card_groups) + 1)]
+            
+        possible_groups = []
+        for x in range (1, len(current_user.card_groups) + 1):
+            possible_groups.append(str(x))
+
         if key in possible_groups:
             index = int(key) - 1
             new_page = EditGroupPage(self.context, index)

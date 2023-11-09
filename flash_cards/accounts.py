@@ -1,8 +1,8 @@
-from json import load
 import os
+from json import load
 from flash_cards.storage.settings_storage import load_settings
 from flash_cards.storage.directories import cached_save_path
-from flash_cards.storage.card_storage import load_save, save, pull_save
+from flash_cards.storage.card_storage import load_save, save, download_save
 
 
 class User:
@@ -18,17 +18,17 @@ class User:
 
     def load_cards(self):
         save_path = self.settings['save_location']
-        # This is a bit bloated.
+
         message = ''
         if save_path == cached_save_path:
             try:
-                groups = pull_save()
+                groups = download_save()
             except:
                 if os.path.exists(cached_save_path): 
                     message = 'Connection error. Using cached remote save.'
                     groups = load_save(cached_save_path)
                 else: 
-                    message = 'Connection error.'
+                    message = 'Connection error. No cached remote save.'
                     groups = []
         else:
             if os.path.exists(save_path):

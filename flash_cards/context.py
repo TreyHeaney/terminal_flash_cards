@@ -18,13 +18,13 @@ class PageContext:
     @property
     def message(self):
         message = self._message
-        self._message = ''
+        if message: self._message = ''
         return message
     
     @message.setter
     def message(self, message):
-        color = colors['red']
-        if 'success' in message: color = colors['green']
+        if 'success' in message.lower(): color = colors['green']
+        else: color = colors['red']
 
         self._message = color + message + colors['reset']
 

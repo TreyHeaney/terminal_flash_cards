@@ -9,10 +9,10 @@ from random import choices, shuffle
 from flash_cards.cards import Card, draw_card
 from flash_cards.accounts import current_user
 from flash_cards.os_switches import clear_terminal
+from flash_cards.storage.card_storage import save
 from flash_cards.src.colors import colors
 from flash_cards.src.page_template import Page
 from flash_cards.src.score_calculations import calculate_points, calculate_loss
-
 
 class ViewCardsPage(Page):
     '''View a single card and guess the answer.'''
@@ -109,8 +109,6 @@ class NewCardPage(Page):
     def display(self):
         super().predisplay()
 
-        group_adding_card_to = self.card_group
-
         new_card = Card(
             input('What is the question for this card?\n'),
             input('What is the answer for this card?\n')
@@ -123,10 +121,12 @@ class NewCardPage(Page):
             user_input = input('')
 
         new_card.dummy_answers = dummy_answers
-        group_adding_card_to.cards.append(new_card)
+        self.card_group.cards.append(new_card)
         
         self.context.back()
         print('Completed card creation, press ENTER.')
+        save(current_user.card_groups, 
+             current_user.settings['save_location'])
 
     def parse_input(self, key):
         super().parse_input(key)
