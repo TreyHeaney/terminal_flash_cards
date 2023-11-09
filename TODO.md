@@ -1,6 +1,12 @@
-This really isn't for anyone else, I'll just leave it out of the gitignore so you can see how epic my workflow is. Unless you want to make a pull request...?
 # TODO
+> Move UI strings to separate file
 > Add card type groups (text, number, etc.)
-> Add custom card types
-> Draw dummy answers from pool of similar card types in same group.
-> Do some crazy dot-product similarity or KNN to find dummy answers most similar to the actual answer.
+  > Add custom card types
+  > Draw dummy answers from pool of similar card types in same group.
+> Do some crazy dot-product similarity or KNN to find dummy answers most similar 
+  to the actual answer.
+> Add interleaving.
+    > interleaved heavy draws. 
+> Card difficulties (0, 1, 2, etc) 
+  > as mastery of lower tiers is achieved, increase liklihood that higher tiered
+    cards are displayed.
