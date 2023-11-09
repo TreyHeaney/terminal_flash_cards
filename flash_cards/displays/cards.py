@@ -20,7 +20,9 @@ class ViewCardsPage(Page):
         super().__init__(context)
         self.name = 'Viewing Cards'
         self.cards = cards
-        max_history = min(len(self.cards) - 2, int(len(self.cards) * 0.33))
+        scaled_max = int(len(self.cards) * 0.33)
+        low_max = len(self.cards) - 2
+        max_history = min(low_max, scaled_max)
         self.recently_drawn = deque([], maxlen=max_history)
         self.last_correct = True
 

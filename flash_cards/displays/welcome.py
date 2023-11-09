@@ -2,7 +2,9 @@ from flash_cards.accounts import current_user
 from flash_cards.src.page_template import Page
 from flash_cards.displays.groups import PreviewGroupPage, EditGroupPage
 from flash_cards.displays.account import AccountPage
+from flash_cards.displays.settings import SettingsPage
 from flash_cards.displays.save_management import ManageSavePage
+
 
 class WelcomePage(Page):
     '''Initial page displayed.'''
@@ -21,15 +23,25 @@ class WelcomePage(Page):
 
 a: View card groups
 b: Manage Save
-c: {'Sign in or sign up' if not current_user.signed_in else 'Sign out'}''')
+c: Settings
+d: {'Sign in or sign up' if not current_user.signed_in else 'Sign out'}''')
         
         super().display()
 
     def parse_input(self, key):
         super().parse_input(key)
 
+        # This is how a match-case should look
+        # match x case y:
+        #   expression()
+        # case z:
+        #   expression()
+        # nocase: 
+        #   expression()
+        # the current syntax is horrifically ugly and unreadable but it won't
+        # change because people actually implemented things with it. 
         if key == 'a':
-            message = current_user.load_cards()
+            message = current_user.load_cards()  # hacky !!!
             if message: self.context.message = message
 
             new_page = PreviewGroupPage(self.context)
@@ -38,6 +50,9 @@ c: {'Sign in or sign up' if not current_user.signed_in else 'Sign out'}''')
             new_page = ManageSavePage(self.context)
             self.context.add_page(new_page)
         elif key == 'c':
+            new_page = SettingsPage(self.context)
+            self.context.add_page(new_page)
+        elif key == 'd':
             if current_user.signed_in:
                 current_user.delete_token()
                 self.context.message = 'Signed out successfully!'
