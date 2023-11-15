@@ -5,6 +5,7 @@ from flash_cards.accounts import current_user
 from flash_cards.src.page_template import Page
 from flash_cards.src.networking import account_auth
 from flash_cards.storage.token_storage import save_token
+from flash_cards.src.strings.prompts import PromptStrings
 
 url = 'http://localhost:4444'
 
@@ -26,7 +27,7 @@ class SignUpPage(Page):
 
         self.context.back()
         self.context.back()
-        print('ENTER to complete sign up request.')
+        print(PromptStrings.press_enter)
 
 
     def parse_input(self, key):
@@ -55,7 +56,7 @@ class SignInPage(Page):
         self.context.back().back()
 
         # The client still tries to accept input. Big design flaw...
-        print('ENTER to complete sign in request.')
+        print(PromptStrings.press_enter)
 
 
 class AccountPage(Page):

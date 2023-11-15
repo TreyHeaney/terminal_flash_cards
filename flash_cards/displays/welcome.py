@@ -4,6 +4,8 @@ from flash_cards.displays.groups import PreviewGroupPage, EditGroupPage
 from flash_cards.displays.account import AccountPage
 from flash_cards.displays.settings import SettingsPage
 from flash_cards.displays.save_management import ManageSavePage
+from flash_cards.src.strings.basics import splash
+from flash_cards.src.strings.prompts import PromptStrings
 
 
 class WelcomePage(Page):
@@ -15,16 +17,7 @@ class WelcomePage(Page):
     def display(self):
         super().predisplay()
 
-        print(f'''   ______         __     _____            __    __
-  / __/ /__ ____ / /    / ___/__ ________/ /__ / /
- / _// / _ `(_-</ _ \  / /__/ _ `/ __/ _  (_-</_/ 
-/_/ /_/\_,_/___/_//_/  \___/\_,_/_/  \_,_/___(_)  
-                                                  
-
-a: View card groups
-b: Manage Save
-c: Settings
-d: {'Sign in or sign up' if not current_user.signed_in else 'Sign out'}''')
+        print(splash + PromptStrings.mm_choices(current_user.signed_in))
         
         super().display()
 

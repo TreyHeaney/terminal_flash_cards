@@ -1,6 +1,7 @@
 from flash_cards.accounts import current_user
 from flash_cards.storage.card_storage import save
 from flash_cards.storage.settings_storage import save_settings
+from flash_cards.src.strings.basics import newline
 
 
 class Page:
@@ -8,8 +9,8 @@ class Page:
         self.context = context
         self.name = 'page'
 
-    def display(self, new_line=True):
-        print(('\n' if new_line else '') + 'q: Quit, `: Back Page')
+    def display(self):
+        print(newline + 'q: Quit, `: Back Page')
 
     def predisplay(self):
         page_names = [page.name for page in self.context.page_stack]

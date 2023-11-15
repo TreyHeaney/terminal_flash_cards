@@ -4,6 +4,8 @@ from flash_cards.cards import Group
 from flash_cards.src.page_template import Page
 from flash_cards.displays.cards import ViewCardsPage, ManageCardsPage
 from flash_cards.accounts import current_user
+from flash_cards.src.strings.basics import newline
+from flash_cards.src.strings.prompts import PromptStrings
 
 
 class NewGroupPage(Page):
@@ -13,7 +15,7 @@ class NewGroupPage(Page):
         self.name = 'Group Creation'
 
     def display(self):
-        print('Creating a new group.\n')
+        print('Creating a new group.' + newline)
         new_group = Group(
             input('Name of group: '),
             input('Short description: ')
@@ -21,7 +23,7 @@ class NewGroupPage(Page):
         current_user.card_groups.append(new_group)
         self.context.back()
         self.context.message = 'Group successfully created!'
-        print('\nPress ENTER to complete group creation.')
+        print(newline + PromptStrings.press_enter)
 
     def parse_input(self, key):
         super().parse_input(key)
@@ -38,22 +40,24 @@ class EditGroupPage(Page):
     def display(self):
         super().predisplay()
         if self.group is None: 
-            print('Select a group to edit.\n')
+            print('Select a group to edit.' + newline)
             print('0: Create a new group')
             for index, group in enumerate(self.groups):
                 print(f'{index + 1}: {group.name}')
             super().display()
         else: 
             edited_group = self.groups[self.group]
-            print(f'Editing card group "{edited_group.name}"\n')
+            print(f'Editing card group "{edited_group.name}"' + newline)
             edited_group.name = input('New group name: ')
             edited_group.description = input('New group description: ')
-            delete_group = input('Delete group? (type \'y\')\n') == 'y'
-            if delete_group: delete_group = input('Are you sure? This will remove all cards within the group and their scores. (type \'y\')\n') == 'y'
+            delete_group = input('Delete group? (type \'y\')' + newline) == 'y'
+            if delete_group: 
+                ver = 'Are you sure? This will remove all cards within the group and their scores. (type \'y\')\n'
+                delete_group = input(ver) == 'y'
 
             if delete_group: del self.groups[self.group]
             
-            print('\nPress ENTER to finish editing group.')
+            print(newline + 'Press ENTER to finish editing group.')
             message = 'Group successfully '
             message += 'deleted!' if delete_group else 'edited!'
             self.context.message = message
@@ -91,10 +95,10 @@ class PreviewGroupPage(Page):
         super().predisplay()
 
         if self.selected_group is None:
-            print('Select a group of cards to view.\n')
+            print('Select a group of cards to view.' + newline)
             for index, group in enumerate(self.groups):
                 print(f'{index}: {group.name}')
-            print('\nm: Manage Groups')
+            print(newline + 'm: Manage Groups')
         else:
             selected_group = self.groups[self.selected_group]
             print('CARDS IN GROUP:')
@@ -108,9 +112,10 @@ class PreviewGroupPage(Page):
                     print(f'WRONG STREAK: {card.wrong_streak}')
                     print(f'LAST CORRECT: {card.last_correct}')
 
-            print('\ns: Start Session, m: Manage Cards, v: Verbose View')
+            s = newline + 's: Start Session, m: Manage Cards, v: Verbose View'
+            print(s, end='')
         
-        super().display(new_line=False)
+        super().display()
 
     def parse_input(self, key):
         super().parse_input(key)
