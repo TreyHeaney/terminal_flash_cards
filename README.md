@@ -1,7 +1,7 @@
 # Flash Cards
-A flash card program written in python for the terminal featuring persistent 
-saves and save management, a remote save API written in node.js, and algorithmic 
-card sequencing.
+A flash card program written in python for the terminal featuring algorithmic 
+card sequencing, persistent saves and save management, and a remote save API 
+written in node.js.
 
 # Prerequisites
 The following things must be installed before local setup.
@@ -33,7 +33,7 @@ Change directory to terminal_flash_cards/server
 $ node server.js
 ```
 2. Start the client.
-Chance directory to terminal_flash_cards/
+Change directory to terminal_flash_cards/
 ```
 $ python main.py
 ```
