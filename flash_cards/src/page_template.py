@@ -9,8 +9,9 @@ class Page:
         self.context = context
         self.name = 'page'
 
-    def display(self):
-        print(newline + 'q: Quit, `: Back Page')
+    def display(self, linebreak=True):
+        nl = newline if linebreak else ''
+        print(nl + 'q: Quit, `: Back Page')
 
     def predisplay(self):
         page_names = [page.name for page in self.context.page_stack]

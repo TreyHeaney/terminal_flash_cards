@@ -205,7 +205,7 @@ class ManageCardsPage(Page):
             print(f'{index}: {card.question}')
 
         print(newline + 'n: New card')
-        super().display(newline=False)
+        super().display(linebreak=False)
 
     def parse_input(self, key):
         super().parse_input(key)
